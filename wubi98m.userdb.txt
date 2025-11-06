@@ -1,0 +1,20 @@
+# Rime user dictionary
+#@/db_name	wubi98m
+#@/db_type	userdb
+#@/rime_version	1.13.1
+#@/tick	12
+#@/user_id	a0fadc10-9d2f-412a-b4ba-c183f642d29c
+ad 	苦	c=1 d=1 t=5
+ggte 	五笔	c=1 d=1 t=2
+ifc 	法	c=1 d=1 t=12
+lwty 	输入	c=1 d=1 t=11
+ol 	库	c=1 d=1 t=10
+pgyr 	定义	c=1 d=1 t=8
+sglf 	配置	c=2 d=1.96079 t=14
+thd 	自	c=1 d=1 t=7
+tlww 	备份	c=1 d=1 t=11
+w 	人	c=1 d=1 t=13
+wh 	个	c=1 d=1 t=12
+wubi 	五笔	c=1 d=1 t=1
+yngk 	词	c=1 d=1 t=9
+ynol 	词库	c=1 d=1 t=4

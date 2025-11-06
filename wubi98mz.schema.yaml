@@ -1,0 +1,90 @@
+schema:
+  schema_id: wubi98mz
+  name: 五笔z拼反查
+  version: "1.20"
+
+switches:
+  - name: ascii_mode
+    states: ["中文", "西文"]
+  - name: full_shape
+    states: ["半角", "全角"]
+
+recognizer:
+  patterns:
+    pinyin: "^z[a-z]*$"  # 匹配以z开头，后面跟小写字母的字符串
+
+engine:
+  processors:
+    - key_binder  # 搶在其他 processor 處理之前判定是否換頁用的符號鍵
+    - ascii_composer
+    - speller
+    - punctuator  # 否則「，。」就會由此上屏
+    - selector
+    - navigator
+    - express_editor
+  segmentors:
+    - ascii_segmentor 
+    - matcher
+    - affix_segmentor@pinyin  # 为拼音模式添加标记
+    - abc_segmentor
+    - punct_segmentor
+    - fallback_segmentor
+  translators:
+    - punct_translator
+    - table_translator
+    - script_translator@pinyin_simp
+  filters:
+    - reverse_lookup_filter@wubi_reverse_lookup
+
+speller:
+  alphabet: zyxwvutsrqponmlkjihgfedcba
+  max_code_length: 4
+  auto_select: true
+  #auto_clear: max_length
+
+pinyin:
+  tag: pinyin
+  prefix: "z"
+
+translator:
+  dictionary: wubi98
+  enable_completion: true
+  enable_sentence: false
+
+pinyin_simp:
+  tag: pinyin
+  dictionary: pinyin_simp
+  enable_completion: true
+  enable_sentence: false
+
+# 反查五笔配置
+wubi_reverse_lookup:
+  dictionary: wubi98             # 用原始五笔码表做反查
+  tags: [pinyin]                    # 匹配拼音的tag
+  overwrite_comment: true
+  comment_format:
+    - "xform/^/〔/"
+    - "xform/$/〕/"
+
+punctuator:
+  import_preset: default
+
+key_binder:
+  bindings:             # 每條定義包含條件、接收按鍵（IBus規格的鍵名，可加修飾符，如「Control+Return」）、發送按鍵
+    # --- 裸 Shift（左/右）同时切 ascii_mode 与 full_shape ---
+    # - { when: always, accept: Shift_L, toggle: ascii_mode }
+    # - { when: always, accept: Shift_L, toggle: full_shape }
+    # - { when: always, accept: Shift_R, toggle: ascii_mode }
+    # - { when: always, accept: Shift_R, toggle: full_shape }
+    # --- 或者：使用 Shift+Space（更稳妥，不易被系统/前端拦截） ---
+    - { when: always, accept: Shift+space, toggle: ascii_mode }
+    - { when: always, accept: Shift+space, toggle: full_shape }
+
+    - when:   paging    # 僅當已發生向後換頁時，
+      accept: minus     # 將「 號」鍵……
+      send:   Page_Up   # 關聯到「向前換頁」；於是 navigator 將收到一發 Page_Up
+
+    - when:   has_menu  # 只要有候選字即滿足條件
+      accept: equal
+      send:   Page_Down
+
